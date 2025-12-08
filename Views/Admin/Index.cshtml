@@ -1,0 +1,59 @@
+﻿@model RentACar_ip.Models.ViewModels.DashboardViewModel
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2 class="mb-4">Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card-glass p-3 text-center">
+            <h3>@Model.TotalFleetCars</h3>
+            <span>Toplam Araç</span>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card-glass p-3 text-center">
+            <h3>@Model.AvailableCars</h3>
+            <span>Müsait Araç</span>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card-glass p-3 text-center">
+            <h3>@Model.RentedCars</h3>
+            <span>Kirada</span>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card-glass p-3 text-center">
+            <h3>@Model.MaintenanceCars</h3>
+            <span>Bakımda</span>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card-glass p-3 text-center">
+            <h3>@Model.EmployeeCount</h3>
+            <span>Çalışan Sayısı</span>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-glass p-3 text-center">
+            <h3>@Model.PendingReservations</h3>
+            <span>Bekleyen Rezervasyon</span>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-glass p-3 text-center">
+            <h3>@Model.UsageRate %</h3>
+            <span>Kullanım Oranı</span>
+        </div>
+    </div>
+</div>

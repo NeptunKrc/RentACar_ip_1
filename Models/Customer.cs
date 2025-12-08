@@ -1,0 +1,14 @@
+﻿namespace RentACar_ip.Models
+{
+    public class Customer
+    {
+        public int Id { get; set; }
+
+        public string FullName { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+        public string NationalId { get; set; } // TC veya pasaport
+
+        public List<ReservationRequest> Reservations { get; set; }
+    }
+}

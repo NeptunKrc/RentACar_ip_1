@@ -1,0 +1,126 @@
+﻿@model RentACar_ip.Models.ViewModels.CarViewModel
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2>Araç Yönetimi</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="row">
+
+    <div class="col-md-8">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Marka / Model</th>
+                    <th>Araç Türü</th>
+                    <th>Vites</th>
+                    <th>Yakıt</th>
+                    <th>Günlük Fiyat</th>
+                    <th>Motor</th>
+                    <th>Kapasite</th>
+                    <th>Foto</th>
+                    <th>Sil</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.Cars)
+                {
+                    var brand = Model.Brands.FirstOrDefault(x => x.Id == c.BrandId)?.BrandName;
+                    var type = Model.CarTypes.FirstOrDefault(x => x.Id == c.CarTypeId)?.TypeName;
+                    var trans = Model.Transmissions.FirstOrDefault(x => x.Id == c.TransmissionTypeId)?.TypeName;
+                    var fuel = Model.FuelTypes.FirstOrDefault(x => x.Id == c.FuelTypeId)?.FuelTypeName;
+
+                    <tr>
+                        <td>@brand @c.ModelName</td>
+                        <td>@type</td>
+                        <td>@trans</td>
+                        <td>@fuel</td>
+                        <td>@c.DailyPrice TL</td>
+                        <td>@c.EnginePower HP</td>
+                        <td>@c.Capacity</td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(c.PhotoUrl))
+                            {
+                                <img src="@c.PhotoUrl" width="80" />
+                            }
+                            else
+                            {
+
+                                <span>Yok</span>
+                            }
+                        </td>
+
+                        <td>
+                            <form method="post" action="/Car/Delete" onsubmit="return confirm('Silinsin mi?');">
+                                <input type="hidden" name="id" value="@c.Id" />
+                                <button class="btn btn-danger btn-sm">Sil</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="col-md-4">
+        <h4>Yeni Araç Ekle</h4>
+
+        <form method="post" action="/Car/Create">
+
+            <label>Marka</label>
+            <select class="form-control" name="NewCar.BrandId">
+                <option value="">Seçiniz</option>
+                @foreach (var b in Model.Brands)
+                {
+                    <option value="@b.Id">@b.BrandName</option>
+                }
+            </select>
+
+            <label class="mt-2">Model Adı</label>
+            <input class="form-control" name="NewCar.ModelName" placeholder="C180, A3, Egea, 320i" />
+
+            <label class="mt-2">Araç Türü</label>
+            <select class="form-control" name="NewCar.CarTypeId">
+                @foreach (var t in Model.CarTypes)
+                {
+                    <option value="@t.Id">@t.TypeName</option>
+                }
+            </select>
+
+            <label class="mt-2">Vites</label>
+            <select class="form-control" name="NewCar.TransmissionTypeId">
+                @foreach (var t in Model.Transmissions)
+                {
+                    <option value="@t.Id">@t.TypeName</option>
+                }
+            </select>
+
+            <label class="mt-2">Yakıt</label>
+            <select class="form-control" name="NewCar.FuelTypeId">
+                @foreach (var f in Model.FuelTypes)
+                {
+                    <option value="@f.Id">@f.FuelTypeName</option>
+                }
+            </select>
+
+            <input class="form-control mt-2" name="NewCar.DailyPrice" placeholder="Günlük Fiyat" />
+            <input class="form-control mt-2" name="NewCar.EnginePower" placeholder="Motor Gücü" />
+            <input class="form-control mt-2" name="NewCar.Capacity" placeholder="Kapasite" />
+            <input class="form-control mt-2" name="NewCar.PhotoUrl" placeholder="Fotoğraf URL" />
+
+            <button class="btn btn-primary mt-3">Ekle</button>
+        </form>
+    </div>
+
+</div>

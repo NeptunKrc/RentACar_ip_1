@@ -1,0 +1,99 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Giriş Yap | RentACar</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+
+        body {
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.17);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 40px;
+            border-radius: 15px;
+            width: 380px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
+        .login-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #fff;
+        }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #4e54c8;
+            border: none;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+            .btn-login:hover {
+                background-color: #3d41a1;
+                color: #fff;
+            }
+
+        .error-text {
+            color: #ffb3b3;
+            font-size: 15px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+
+        <div class="login-title">RentACar Yönetim Paneli</div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="error-text">@ViewBag.Error</div>
+        }
+
+        <form method="post">
+
+            <div class="form-group">
+                <label style="color:white;">Kullanıcı Adı</label>
+                <input type="text" name="username" class="form-control" placeholder="Kullanıcı adınız" required />
+            </div>
+
+            <div class="form-group mt-3">
+                <label style="color:white;">Şifre</label>
+                <input type="password" name="password" class="form-control" placeholder="Şifreniz" required />
+            </div>
+
+            <button type="submit" class="btn btn-login mt-3">Giriş Yap</button>
+
+        </form>
+
+    </div>
+
+</body>
+</html>

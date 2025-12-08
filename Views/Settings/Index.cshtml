@@ -1,0 +1,142 @@
+﻿@model RentACar_ip.Models.SettingsViewModel
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2 class="mb-4">Ayarlar</h2>
+
+<div class="row">
+
+    <!-- SOL TARAFTAKİ TÜM AYARLAR -->
+    <div class="col-md-7">
+
+        <!-- BRAND -->
+        <div class="card mb-4 p-3">
+            <h4>Markalar</h4>
+
+            <form method="post" action="/Settings/AddBrand" class="form-inline mb-2">
+                <input type="text" name="name" class="form-control mr-2" placeholder="Yeni marka" required />
+                <button class="btn btn-primary">Ekle</button>
+            </form>
+
+            <ul class="list-group">
+                @foreach (var b in Model.Brands)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @b.BrandName
+                        <form method="post" action="/Settings/DeleteBrand" style="margin:0;">
+                            <input type="hidden" name="id" value="@b.Id" />
+                            <button class="btn btn-sm btn-danger">Sil</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <!-- CAR TYPE -->
+        <div class="card mb-4 p-3">
+            <h4>Araç Tipleri</h4>
+
+            <form method="post" action="/Settings/AddCarType" class="form-inline mb-2">
+                <input type="text" name="name" class="form-control mr-2" placeholder="Yeni araç tipi" required />
+                <button class="btn btn-primary">Ekle</button>
+            </form>
+
+            <ul class="list-group">
+                @foreach (var c in Model.CarTypes)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @c.TypeName
+                        <form method="post" action="/Settings/DeleteCarType">
+                            <input type="hidden" name="id" value="@c.Id" />
+                            <button class="btn btn-sm btn-danger">Sil</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <!-- FUEL TYPE -->
+        <div class="card mb-4 p-3">
+            <h4>Yakıt Tipleri</h4>
+
+            <form method="post" action="/Settings/AddFuel" class="form-inline mb-2">
+                <input type="text" name="name" class="form-control mr-2" placeholder="Yeni yakıt tipi" required />
+                <button class="btn btn-primary">Ekle</button>
+            </form>
+
+            <ul class="list-group">
+                @foreach (var f in Model.FuelTypes)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @f.FuelTypeName
+                        <form method="post" action="/Settings/DeleteFuel">
+                            <input type="hidden" name="id" value="@f.Id" />
+                            <button class="btn btn-sm btn-danger">Sil</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <!-- TRANSMISSION -->
+        <div class="card mb-4 p-3">
+            <h4>Vites Tipleri</h4>
+
+            <form method="post" action="/Settings/AddTrans" class="form-inline mb-2">
+                <input type="text" name="name" class="form-control mr-2" placeholder="Yeni vites tipi" required />
+                <button class="btn btn-primary">Ekle</button>
+            </form>
+
+            <ul class="list-group">
+                @foreach (var t in Model.TransmissionTypes)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @t.TypeName
+                        <form method="post" action="/Settings/DeleteTrans">
+                            <input type="hidden" name="id" value="@t.Id" />
+                            <button class="btn btn-sm btn-danger">Sil</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- SAĞ TARAFTA ROL YÖNETİMİ -->
+    <div class="col-md-5">
+
+        <div class="card p-3" style="border-left:5px solid #4e54c8;">
+            <h3 class="mb-3">Rol Yönetimi</h3>
+
+            @if (TempData["RoleError"] != null)
+            {
+                <div class="alert alert-danger">@TempData["RoleError"]</div>
+            }
+
+            @if (TempData["RoleSuccess"] != null)
+            {
+                <div class="alert alert-success">@TempData["RoleSuccess"]</div>
+            }
+
+            <form method="post" action="/Settings/AddRole">
+                <label>Yeni Rol Adı:</label>
+                <input type="text" name="roleName" class="form-control mb-3" placeholder="Örn: ADMIN" required />
+                <button class="btn btn-success w-100">Rol Ekle</button>
+            </form>
+
+            <hr />
+
+            <h5>Mevcut Roller</h5>
+            <ul class="list-group mt-2">
+                @foreach (var r in Model.Roles)
+                {
+                    <li class="list-group-item">@r.Name</li>
+                }
+            </ul>
+        </div>
+
+    </div>
+
+</div>

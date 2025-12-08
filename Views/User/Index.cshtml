@@ -1,0 +1,74 @@
+﻿@model RentACar_ip.Models.UserViewModel
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2>Personel Yönetimi</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<hr />
+
+<div class="row">
+
+    <div class="col-md-7">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Ad Soyad</th>
+                    <th>Kullanıcı Adı</th>
+                    <th>Rol</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model.Users)
+                {
+                    <tr>
+                        <td>@u.FullName</td>
+                        <td>@u.Username</td>
+                        <td>@u.Role.Name</td>
+                        <td>
+                            <form method="post" action="/User/Delete" onsubmit="return confirm('Silinsin mi?');">
+                                <input type="hidden" name="id" value="@u.Id" />
+                                <button class="btn btn-danger btn-sm">Sil</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="col-md-5">
+        <h4>Yeni Personel Ekle</h4>
+
+        <form method="post" action="/User/Create">
+
+            <input type="text" name="NewUser.FullName" class="form-control" placeholder="Ad Soyad" />
+
+            <input type="text" name="NewUser.Username" class="form-control mt-2" placeholder="Kullanıcı Adı" />
+
+            <input type="password" name="NewUser.Password" class="form-control mt-2" placeholder="Şifre" />
+
+            <select name="NewUser.RoleId" class="form-control mt-2">
+                <option value="0">Rol Seç</option>
+                @foreach (var r in Model.Roles)
+                {
+                    <option value="@r.Id">@r.Name</option>
+                }
+            </select>
+
+            <button class="btn btn-primary mt-3">Kaydet</button>
+        </form>
+    </div>
+
+</div>

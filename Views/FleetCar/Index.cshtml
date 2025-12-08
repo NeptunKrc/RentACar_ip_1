@@ -1,0 +1,88 @@
+﻿@model RentACar_ip.Models.ViewModels.FleetCarViewModel
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2>Filo Yönetimi</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="row">
+
+    <!-- FİLO LİSTESİ -->
+    <div class="col-md-8">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Seri No</th>
+                    <th>Araç</th>
+                    <th>Durum</th>
+                    <th>Sil</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.FleetCars)
+                {
+                    var car = Model.Cars.FirstOrDefault(c => c.Id == f.CarId);
+                    var brand = Model.Brands.FirstOrDefault(b => b.Id == car.BrandId)?.BrandName;
+
+                    <tr>
+                        <td>@f.CarSerialId</td>
+
+                        <td>@brand @car.ModelName</td>
+
+                        <td>@f.Status</td>
+
+                        <td>
+                            <form method="post" action="/FleetCar/Delete" onsubmit="return confirm('Silinsin mi?');">
+                                <input type="hidden" name="id" value="@f.Id" />
+                                <button class="btn btn-danger btn-sm">Sil</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- YENİ FİLO KAYDI -->
+    <div class="col-md-4">
+        <h4>Yeni Filo Kaydı</h4>
+
+        <form method="post" action="/FleetCar/Create">
+
+            <label>Seri No</label>
+            <input class="form-control" name="NewFleetCar.CarSerialId" placeholder="Örn: ABC123" />
+
+            <label class="mt-2">Araç Seç</label>
+            <select class="form-control" name="NewFleetCar.CarId">
+                <option value="0">Seçiniz</option>
+                @foreach (var c in Model.Cars)
+                {
+                    var brand = Model.Brands.FirstOrDefault(b => b.Id == c.BrandId)?.BrandName;
+                    <option value="@c.Id">@brand @c.ModelName</option>
+                }
+            </select>
+
+            <label class="mt-2">Durum</label>
+            <select class="form-control" name="NewFleetCar.Status">
+                <option value="">Seçiniz</option>
+                <option value="Uygun">Uygun</option>
+                <option value="Kirada">Kirada</option>
+                <option value="Bakımda">Bakımda</option>
+            </select>
+
+
+            <button class="btn btn-primary mt-3">Ekle</button>
+        </form>
+    </div>
+
+</div>
