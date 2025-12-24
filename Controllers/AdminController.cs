@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RentACar_ip.Models;
 using RentACar_ip.Models.ViewModels;
@@ -6,37 +7,54 @@ using RentACar_ip.Repositories;
 
 namespace RentACar_ip.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IRepository<FleetCar> _fleetRepo;
-        private readonly IRepository<User> _userRepo;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public AdminController(
             IRepository<FleetCar> fleetRepo,
-            IRepository<User> userRepo)
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _fleetRepo = fleetRepo;
-            _userRepo = userRepo;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
-        // --- BURASI DASHBOARD INDEX METODU ---
         public async Task<IActionResult> Index()
         {
+            // FİLO BİLGİLERİ
             var fleet = await _fleetRepo.GetAllAsync();
-            var users = await _userRepo.GetAllAsync();
 
             int total = fleet.Count();
             int available = fleet.Count(x => x.Status == "Uygun");
             int rented = fleet.Count(x => x.Status == "Kirada");
             int maintenance = fleet.Count(x => x.Status == "Bakımda");
 
-            // Kullanım Oranı
-            double usageRate = 0;
             int usable = total - maintenance;
+            double usageRate = usable > 0
+                ? Math.Round((double)rented / usable * 100, 1)
+                : 0;
 
-            if (usable > 0)
-                usageRate = Math.Round((double)rented / usable * 100, 1);
+            // KULLANICI BİLGİSİ (Identity üzerinden)
+            var allUsers = _userManager.Users.ToList();
+
+            // Employee rolüne sahip kullanıcılar
+            var employeeRole = await _roleManager.FindByNameAsync("EMPLOYEE");
+            int employeeCount = 0;
+
+            if (employeeRole != null)
+            {
+                foreach (var user in allUsers)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    if (roles.Contains("EMPLOYEE"))
+                        employeeCount++;
+                }
+            }
 
             var vm = new DashboardViewModel
             {
@@ -45,9 +63,8 @@ namespace RentACar_ip.Controllers
                 RentedCars = rented,
                 MaintenanceCars = maintenance,
 
-                PendingReservations = 0,
-                EmployeeCount = users.Count(u => u.RoleId == 1 || u.RoleId == 2),
-
+                PendingReservations = 0, // Şimdilik kullanılmadı
+                EmployeeCount = employeeCount,
                 UsageRate = usageRate
             };
 

@@ -13,7 +13,7 @@
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
-        public string Status { get; set; }  // pending, approved, rejected
+        public string Status { get; set; }  
         public DateTime CreatedAt { get; set; }
     }
 }

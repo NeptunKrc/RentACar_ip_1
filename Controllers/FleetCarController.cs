@@ -51,7 +51,7 @@ namespace RentACar_ip.Controllers
             // Büyük harfe çevir
             model.NewFleetCar.CarSerialId = model.NewFleetCar.CarSerialId.ToUpper();
 
-            // 🔥 AYNI SERİ NUMARASI VAR MI?
+
             var exists = (await _fleetRepo.FindAsync(x => x.CarSerialId == model.NewFleetCar.CarSerialId)).Any();
             if (exists)
             {

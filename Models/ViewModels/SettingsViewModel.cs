@@ -1,12 +1,14 @@
-﻿namespace RentACar_ip.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace RentACar_ip.Models.ViewModels
 {
     public class SettingsViewModel
     {
-        public IEnumerable<Brand> Brands { get; set; }
-        public IEnumerable<CarType> CarTypes { get; set; }
-        public IEnumerable<FuelType> FuelTypes { get; set; }
-        public IEnumerable<TransmissionType> TransmissionTypes { get; set; }
-        public IEnumerable<Role> Roles { get; set; }
+        public List<Brand> Brands { get; set; }
+        public List<CarType> CarTypes { get; set; }
+        public List<FuelType> FuelTypes { get; set; }
+        public List<TransmissionType> TransmissionTypes { get; set; }
 
+        public List<IdentityRole> Roles { get; set; }
     }
 }

@@ -2,9 +2,9 @@
 {
     public class FleetCar
     {
-        public int Id { get; set; }  // Primary Key (Identity)
+        public int Id { get; set; }  
 
-        public string CarSerialId { get; set; }  // Business Key (Unique)
+        public string CarSerialId { get; set; }  
         public string Status { get; set; }
 
         public int CarId { get; set; }

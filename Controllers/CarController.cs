@@ -53,7 +53,6 @@ namespace RentACar_ip.Controllers
                 return RedirectToAction("Index");
             }
 
-            // ⭐ MODEL NAME HER ZAMAN BÜYÜK HARF OLARAK KAYDEDİLİR
             model.NewCar.ModelName = model.NewCar.ModelName.ToUpper();
 
             await _carRepo.AddAsync(model.NewCar);

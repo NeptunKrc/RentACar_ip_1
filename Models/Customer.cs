@@ -7,7 +7,7 @@
         public string FullName { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
-        public string NationalId { get; set; } // TC veya pasaport
+        public string NationalId { get; set; } 
 
         public List<ReservationRequest> Reservations { get; set; }
     }

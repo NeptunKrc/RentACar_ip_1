@@ -1,0 +1,183 @@
+﻿@{
+    Layout = "_AdminLayout";
+
+    var pending = ViewBag.Pending as List<RentACar_ip.Models.ReservationRequest>;
+    var approved = ViewBag.Approved as List<RentACar_ip.Models.ReservationRequest>;
+    var rejected = ViewBag.Rejected as List<RentACar_ip.Models.ReservationRequest>;
+    var archived = ViewBag.Archived as List<RentACar_ip.Models.ReservationRequest>;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    .tab-card {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 14px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: .85rem;
+        font-weight: 600;
+        color: white;
+    }
+
+    .pending {
+        background: #f1c40f;
+    }
+
+    .approved {
+        background: #2ecc71;
+    }
+
+    .rejected {
+        background: #e74c3c;
+    }
+
+    .archived {
+        background: #7f8c8d;
+    }
+
+    .res-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 18px;
+        margin-bottom: 14px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    .res-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+</style>
+
+
+<h2 class="mb-4">Rezervasyon Yönetimi</h2>
+
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#pending">Bekleyen</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#approved">Onaylananlar</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#rejected">Reddedilenler</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#archived">Arşiv</a>
+    </li>
+</ul>
+
+<div class="tab-content tab-card">
+
+    <!-- BEKLEYEN -->
+    <div class="tab-pane fade show active" id="pending">
+        @if (!pending.Any())
+        {
+            <p class="text-muted">Bekleyen rezervasyon yok.</p>
+        }
+        else
+        {
+            foreach (var r in pending)
+            {
+                <div class="res-card">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="res-title">@r.Customer.FullName</div>
+                            <div>@r.Car.Brand.BrandName @r.Car.ModelName</div>
+                            <small>@r.StartDate.ToShortDateString() → @r.EndDate.ToShortDateString()</small>
+                        </div>
+
+                        <div class="d-flex gap-2">
+
+                            <form method="post" action="/Reservations/Approve">
+                                <input type="hidden" name="id" value="@r.Id" />
+                                <button class="btn btn-success btn-sm">Onayla</button>
+                            </form>
+
+                            <form method="post" action="/Reservations/Reject">
+                                <input type="hidden" name="id" value="@r.Id" />
+                                <button class="btn btn-danger btn-sm">Reddet</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+
+    <!-- ONAYLANANLAR -->
+    <div class="tab-pane fade" id="approved">
+        @if (!approved.Any())
+        {
+            <p class="text-muted">Onaylanmış rezervasyon yok.</p>
+        }
+        else
+        {
+            foreach (var r in approved)
+            {
+                <div class="res-card">
+                    <div class="res-title">@r.Customer.FullName</div>
+                    <div>@r.Car.Brand.BrandName @r.Car.ModelName</div>
+                    <small>@r.StartDate.ToShortDateString() → @r.EndDate.ToShortDateString()</small>
+                    <span class="status-badge approved mt-2">Onaylandı</span>
+                </div>
+            }
+        }
+    </div>
+
+
+    <!-- REDDEDİLENLER -->
+    <div class="tab-pane fade" id="rejected">
+
+        @if (!rejected.Any())
+        {
+            <p class="text-muted">Reddedilen rezervasyon yok.</p>
+        }
+        else
+        {
+            foreach (var r in rejected)
+            {
+                <div class="res-card">
+                    <div class="res-title">@r.Customer.FullName</div>
+                    <div>@r.Car.Brand.BrandName @r.Car.ModelName</div>
+                    <small>@r.StartDate.ToShortDateString() → @r.EndDate.ToShortDateString()</small>
+                    <span class="status-badge rejected mt-2">Reddedildi</span>
+                </div>
+            }
+        }
+    </div>
+
+
+    <!-- ARŞİV -->
+    <div class="tab-pane fade" id="archived">
+
+        @if (!archived.Any())
+        {
+            <p class="text-muted">Arşivde rezervasyon yok.</p>
+        }
+        else
+        {
+            foreach (var r in archived)
+            {
+                <div class="res-card">
+                    <div class="res-title">@r.Customer.FullName</div>
+                    <div>@r.Car.Brand.BrandName @r.Car.ModelName</div>
+                    <small>@r.StartDate.ToShortDateString() → @r.EndDate.ToShortDateString()</small>
+                    <span class="status-badge archived mt-2">Arşiv</span>
+                </div>
+            }
+        }
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

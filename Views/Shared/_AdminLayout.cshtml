@@ -111,6 +111,7 @@
         <a href="/Car/Index">🚘 Araçlar</a>
         <a href="/FleetCar/Index">📦 Filo Yönetimi</a>
         <a href="/Account/Logout">🚪 Çıkış</a>
+        <a href="/Reservations/Index">Rezervayson Talepleri</a> 
     </div>
 
     <!-- CONTENT -->
@@ -119,6 +120,70 @@
             @RenderBody()
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/reservationHub")
+            .build();
+
+        connection.on("ReceiveReservationNotification", (message) => {
+
+            const toast = document.createElement("div");
+            toast.className = "toast align-items-center text-bg-primary border-0 show";
+            toast.role = "alert";
+            toast.style = `
+                min-width: 280px;
+                animation: slideIn .4s ease;
+            `;
+
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <strong>Yeni Rezervasyon:</strong> ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+            `;
+
+            document.getElementById("toast-container").appendChild(toast);
+
+            setTimeout(() => toast.remove(), 6000);
+        });
+
+        connection.start();
+
+        // Animasyon
+    </script>
+
+    <style>
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        }
+    </style>
+
+    <div id="toast-container" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;">
+    </div>
+
 
 </body>
 </html>

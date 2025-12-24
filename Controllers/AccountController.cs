@@ -27,7 +27,7 @@ namespace RentACar_ip.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
-            // Kullanıcıyı çekiyoruz
+
             var user = (await _userRepo.FindAsync(
                 u => u.Username == username &&
                      u.Password == password
@@ -39,7 +39,7 @@ namespace RentACar_ip.Controllers
                 return View();
             }
 
-            // Kullanıcının rolünü çekiyoruz
+
             var role = await _roleRepo.GetByIdAsync(user.RoleId);
             if (role == null)
             {
@@ -47,11 +47,11 @@ namespace RentACar_ip.Controllers
                 return View();
             }
 
-            // CLAIM OLUŞTURMA – *KRİTİK NOKTA*
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, role.Name)  // *** ADMIN / EMPLOYEE ***
+                new Claim(ClaimTypes.Role, role.Name) 
             };
 
             var identity = new ClaimsIdentity(

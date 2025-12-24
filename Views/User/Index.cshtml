@@ -1,74 +1,93 @@
-﻿@model RentACar_ip.Models.UserViewModel
+﻿@model List<Microsoft.AspNetCore.Identity.IdentityUser>
 @{
     Layout = "_AdminLayout";
 }
 
-<h2>Personel Yönetimi</h2>
-
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
-
-<hr />
+<h2 class="mb-4">Personel Yönetimi</h2>
 
 <div class="row">
 
+    <!-- MEVCUT PERSONEL LİSTESİ -->
     <div class="col-md-7">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Ad Soyad</th>
-                    <th>Kullanıcı Adı</th>
-                    <th>Rol</th>
-                    <th>İşlem</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var u in Model.Users)
-                {
+        <div class="card p-3 shadow-sm mb-4">
+            <h4>Mevcut Personel</h4>
+            <table class="table table-striped mt-3">
+                <thead>
                     <tr>
-                        <td>@u.FullName</td>
-                        <td>@u.Username</td>
-                        <td>@u.Role.Name</td>
-                        <td>
-                            <form method="post" action="/User/Delete" onsubmit="return confirm('Silinsin mi?');">
-                                <input type="hidden" name="id" value="@u.Id" />
-                                <button class="btn btn-danger btn-sm">Sil</button>
-                            </form>
-                        </td>
+                        <th>Email</th>
+                        <th>Kullanıcı Adı</th>
+                        <th>Rol</th>
+                        <th>İşlemler</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model)
+                    {
+                        <tr>
+                            <td>@u.Email</td>
+                            <td>@u.UserName</td>
+
+                            <td>
+                                <form method="post" action="/User/UpdateRole" class="form-inline">
+                                    <input type="hidden" name="userId" value="@u.Id" />
+
+                                    <select name="newRole" class="form-control form-control-sm mr-2">
+                                        <option value="admin">Admin</option>
+                                        <option value="employee">Employee</option>
+                                    </select>
+
+                                    <button class="btn btn-sm btn-secondary">Kaydet</button>
+                                </form>
+                            </td>
+
+                            <td>
+                                <form method="post" action="/User/DeleteUser" onsubmit="return confirm('Personel silinsin mi?');">
+                                    <input type="hidden" name="id" value="@u.Id" />
+                                    <button class="btn btn-sm btn-danger">Sil</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 
 
+    <!-- YENİ PERSONEL EKLEME -->
     <div class="col-md-5">
-        <h4>Yeni Personel Ekle</h4>
+        <div class="card p-4 shadow-sm">
+            <h4 class="mb-3">Yeni Personel Ekle</h4>
 
-        <form method="post" action="/User/Create">
+            @if (TempData["UserError"] != null)
+            {
+                <div class="alert alert-danger">@TempData["UserError"]</div>
+            }
+            @if (TempData["UserSuccess"] != null)
+            {
+                <div class="alert alert-success">@TempData["UserSuccess"]</div>
+            }
 
-            <input type="text" name="NewUser.FullName" class="form-control" placeholder="Ad Soyad" />
+            <form method="post" action="/User/AddUser">
 
-            <input type="text" name="NewUser.Username" class="form-control mt-2" placeholder="Kullanıcı Adı" />
+                <label>Kullanıcı Adı</label>
+                <input type="text" name="Username" class="form-control mb-2" required />
 
-            <input type="password" name="NewUser.Password" class="form-control mt-2" placeholder="Şifre" />
+                <label>Email</label>
+                <input type="email" name="Email" class="form-control mb-2" required />
 
-            <select name="NewUser.RoleId" class="form-control mt-2">
-                <option value="0">Rol Seç</option>
-                @foreach (var r in Model.Roles)
-                {
-                    <option value="@r.Id">@r.Name</option>
-                }
-            </select>
+                <label>Şifre</label>
+                <input type="password" name="Password" class="form-control mb-2" required />
 
-            <button class="btn btn-primary mt-3">Kaydet</button>
-        </form>
+                <label>Rol</label>
+                <select name="Role" class="form-control mb-3" required>
+                    <option value="employee">Employee</option>
+                    <option value="admin">Admin</option>
+                </select>
+
+                <button class="btn btn-primary w-100">Personel Ekle</button>
+            </form>
+        </div>
     </div>
 
 </div>

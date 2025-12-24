@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RentACar_ip.Models;
 using RentACar_ip.Models.ViewModels;
@@ -13,40 +14,41 @@ namespace RentACar_ip.Controllers
         private readonly IRepository<CarType> _carTypeRepo;
         private readonly IRepository<FuelType> _fuelRepo;
         private readonly IRepository<TransmissionType> _transRepo;
-        private readonly IRepository<Role> _roleRepo;
+
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public SettingsController(
             IRepository<Brand> brandRepo,
             IRepository<CarType> carTypeRepo,
             IRepository<FuelType> fuelRepo,
             IRepository<TransmissionType> transRepo,
-            IRepository<Role> roleRepo
+            RoleManager<IdentityRole> roleManager
         )
         {
             _brandRepo = brandRepo;
             _carTypeRepo = carTypeRepo;
             _fuelRepo = fuelRepo;
             _transRepo = transRepo;
-            _roleRepo = roleRepo;
+            _roleManager = roleManager;
         }
 
         public async Task<IActionResult> Index()
         {
             var model = new SettingsViewModel
             {
-                Brands = await _brandRepo.GetAllAsync(),
-                CarTypes = await _carTypeRepo.GetAllAsync(),
-                FuelTypes = await _fuelRepo.GetAllAsync(),
-                TransmissionTypes = await _transRepo.GetAllAsync(),
-                Roles = await _roleRepo.GetAllAsync()
+                Brands = (await _brandRepo.GetAllAsync()).ToList(),
+                CarTypes = (await _carTypeRepo.GetAllAsync()).ToList(),
+                FuelTypes = (await _fuelRepo.GetAllAsync()).ToList(),
+                TransmissionTypes = (await _transRepo.GetAllAsync()).ToList(),
+
+                Roles = _roleManager.Roles.ToList()
             };
+
 
             return View(model);
         }
 
-        // -------------------------
-        // BRAND
-        // -------------------------
+        // BRAND (AJAX)
         [HttpPost]
         public async Task<IActionResult> AddBrand(string name)
         {
@@ -76,9 +78,7 @@ namespace RentACar_ip.Controllers
             return RedirectToAction("Index");
         }
 
-        // -------------------------
         // CAR TYPE
-        // -------------------------
         [HttpPost]
         public async Task<IActionResult> AddCarType(string name)
         {
@@ -108,9 +108,7 @@ namespace RentACar_ip.Controllers
             return RedirectToAction("Index");
         }
 
-        // -------------------------
         // FUEL TYPE
-        // -------------------------
         [HttpPost]
         public async Task<IActionResult> AddFuel(string name)
         {
@@ -140,9 +138,7 @@ namespace RentACar_ip.Controllers
             return RedirectToAction("Index");
         }
 
-        // -------------------------
         // TRANSMISSION
-        // -------------------------
         [HttpPost]
         public async Task<IActionResult> AddTrans(string name)
         {
@@ -172,9 +168,7 @@ namespace RentACar_ip.Controllers
             return RedirectToAction("Index");
         }
 
-        // -------------------------
-        // ROLE
-        // -------------------------
+        // **IDENTITY ROLE EKLEME**
         [HttpPost]
         public async Task<IActionResult> AddRole(string roleName)
         {
@@ -186,15 +180,14 @@ namespace RentACar_ip.Controllers
 
             roleName = roleName.ToUpper().Trim();
 
-            var exists = (await _roleRepo.FindAsync(x => x.Name == roleName)).Any();
+            var exists = await _roleManager.RoleExistsAsync(roleName);
             if (exists)
             {
-                TempData["RoleError"] = "Bu rol zaten mevcut!";
+                TempData["RoleError"] = "Bu rol zaten mevcut.";
                 return RedirectToAction("Index");
             }
 
-            await _roleRepo.AddAsync(new Role { Name = roleName });
-            await _roleRepo.SaveAsync();
+            await _roleManager.CreateAsync(new IdentityRole(roleName));
 
             TempData["RoleSuccess"] = "Rol başarıyla eklendi.";
             return RedirectToAction("Index");
